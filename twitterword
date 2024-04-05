@@ -1,0 +1,25 @@
+mport tweepy
+import pandas as pd
+
+# 设置 Twitter API 的密钥和令牌
+consumer_key = 'Your_Consumer_Key'
+consumer_secret = 'Your_Consumer_Secret'
+access_token = 'Your_Access_Token'
+access_token_secret = 'Your_Access_Token_Secret'
+
+# 连接 Twitter API
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+api = tweepy.API(auth)
+
+# 获取热词数据
+trends = api.trends_place(id=1)  # 这里的 id 可能需要根据你的需求进行调整
+
+# 将热词数据放入 pandas 的数据框
+trends_data = []
+for trend in trends[0]['trends']:
+    trends_data.append({'name': trend['name'], 'tweet_volume': trend['tweet_volume'] if trend['tweet_volume'] else 0})
+df = pd.DataFrame(trends_data)
+
+# 将数据框导出为表格
+df.to_csv('twitter_trends.csv', index=False)
